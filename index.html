@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fabe Agri Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">Fabe Agri Store</div>
+    <nav>
+      <a href="#products">Shop</a>
+      <a href="#about">About Us</a>
+      <a href="#contact">Contact</a>
+      <a href="#" id="admin-login-btn">Admin Login</a>
+    </nav>
+    <div class="cart-icon" id="cart-icon">🛒 Cart (<span id="cart-count">0</span>)</div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Fresh Harvest Delivered Daily</h1>
+    <p>Locally sourced, organically grown produce delivered straight to your kitchen.</p>
+    <a href="#products" class="cta-button">Start Shopping Now</a>
+  </section>
+
+  <!-- Products -->
+  <section id="products" class="product-grid">
+    <h2>Our Featured Products</h2>
+
+    <!-- Category Filter -->
+    <div class="filter">
+      <label for="category-filter">Filter by Category:</label>
+      <select id="category-filter">
+        <option value="All">All</option>
+        <option value="Fruits & Vegetables">Fruits & Vegetables</option>
+        <option value="Dairy & Eggs">Dairy & Eggs</option>
+        <option value="Agricultural Tools">Agricultural Tools</option>
+        <option value="Seeds & Plants">Seeds & Plants</option>
+        <option value="Organic & Pantry">Organic & Pantry</option>
+      </select>
+    </div>
+
+    <div id="product-list"></div>
+  </section>
+
+  <!-- About Us -->
+  <section id="about" class="about">
+    <h2>About Fabe Agri Store</h2>
+    <p>From humble beginnings as a small farm in our district, the founder has expanded into Fabe Agri Store, bringing fresh produce to the internet and your home.</p>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+    <p>Email: Agrifabestore624@gmail.com</p>
+    <div class="social-icons">
+      <img src="https://via.placeholder.com/50?text=FB" alt="Facebook">
+      <img src="https://via.placeholder.com/50?text=IG" alt="Instagram">
+      <img src="https://via.placeholder.com/50?text=TW" alt="Twitter">
+    </div>
+  </section>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="cart-close">&times;</span>
+      <h2>Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <p>Total: $<span id="cart-total">0.00</span></p>
+    </div>
+  </div>
+
+  <!-- Admin Login Modal -->
+  <div id="admin-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="admin-close">&times;</span>
+      <h2>Admin Login</h2>
+      <input type="text" id="admin-username" placeholder="Username">
+      <input type="password" id="admin-password" placeholder="Password">
+      <button id="admin-login">Login</button>
+      <div id="admin-message"></div>
+    </div>
+  </div>
+
+  <!-- Product View Modal -->
+  <div id="product-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="product-close">&times;</span>
+      <img id="product-modal-image" src="" alt="" style="width:100%;border-radius:10px;">
+      <h3 id="product-modal-name"></h3>
+      <p id="product-modal-description"></p>
+      <p id="product-modal-price" class="price"></p>
+      <p id="product-modal-stock"></p>
+      <p id="product-modal-rating"></p>
+
+      <button id="product-modal-add">Add to Cart</button>
+      <button id="product-modal-edit" style="display:none;background:#2196F3;margin-top:10px;">Edit</button>
+      <button id="product-modal-delete" style="display:none;background:#e53935;margin-top:5px;">Delete</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
