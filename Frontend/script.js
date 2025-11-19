@@ -34,6 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const productModalAdd = document.getElementById('product-modal-add');
 
     const categoryFilter = document.getElementById('category-filter');
+    
+    // ------------------------------------------------------------------
+    // MOVED ADMIN BUTTON VARIABLES HERE TO FIX THE REFERENCE ERROR!
+    // ------------------------------------------------------------------
+    const adminBtn = document.getElementById('admin-login-btn');
+    const adminModal = document.getElementById('admin-modal');
+    const adminClose = document.getElementById('admin-close');
+    const adminLoginBtn = document.getElementById('admin-login'); // This was the variable causing the error!
+    const adminMessage = document.getElementById('admin-message');
+    // ------------------------------------------------------------------
 
     let cart = [];
     let currentProductIndex = null;
@@ -127,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cart-close').addEventListener('click', () => cartModal.style.display = 'none');
     productClose.addEventListener('click', () => productModal.style.display = 'none');
 
-    // --- UPDATED Admin Login Logic ---
+    // --- UPDATED Admin Login Logic (This is where the variable was used first) ---
     adminLoginBtn.addEventListener('click', () => {
         const username = document.getElementById('admin-username').value;
         const password = document.getElementById('admin-password').value;
@@ -150,13 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     // ---------------------------------
 
-    // Admin Login button handler (remains the same)
-    const adminBtn = document.getElementById('admin-login-btn');
-    const adminModal = document.getElementById('admin-modal');
-    const adminClose = document.getElementById('admin-close');
-    const adminLoginBtn = document.getElementById('admin-login');
-    const adminMessage = document.getElementById('admin-message');
-
+    // Admin Login button handler
     adminBtn.addEventListener('click', () => adminModal.style.display = 'block');
     adminClose.addEventListener('click', () => adminModal.style.display = 'none');
 
