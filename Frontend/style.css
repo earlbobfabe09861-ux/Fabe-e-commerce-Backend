@@ -208,6 +208,31 @@ header nav a {
   cursor: pointer;
 }
 
+/* Styling for the Remove button inside the cart modal */
+.modal-content .remove-btn {
+  background-color: #E53935; /* Red color */
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: auto; /* Override modal button width */
+  font-size: 0.8em;
+  margin-left: 10px;
+  display: inline-block;
+}
+
+.modal-content ul {
+    list-style: none; /* Clean up the cart list */
+    padding: 0;
+}
+.modal-content li {
+    padding: 5px 0;
+    border-bottom: 1px dashed #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 /* Add to Cart Button */
 #product-modal-add {
   background-color: #4CAF50;

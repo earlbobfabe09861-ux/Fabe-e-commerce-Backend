@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let cart = [];
     let currentProductIndex = null;
+    let loggedInUser = null; // New state to track the logged-in user role
 
     function renderProducts(filter = 'All') {
         productListEl.innerHTML = '';
@@ -58,18 +59,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- UPDATED updateCart function with Remove button ---
     function updateCart() {
         cartCountEl.textContent = cart.length;
         cartItemsEl.innerHTML = '';
         let total = 0;
-        cart.forEach(item => {
+
+        cart.forEach((item, index) => {
             total += item.price;
             const li = document.createElement('li');
-            li.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+            li.innerHTML = `
+                ${item.name} - $${item.price.toFixed(2)} 
+                <button class="remove-btn" data-index="${index}">Remove</button>
+            `;
             cartItemsEl.appendChild(li);
         });
+
         cartTotalEl.textContent = total.toFixed(2);
     }
+    // -----------------------------------------------------
+
+    // --- New function to remove item from cart ---
+    cartItemsEl.addEventListener('click', (e) => {
+        if(e.target.classList.contains('remove-btn')) {
+            const index = e.target.dataset.index;
+            // Remove 1 item at the specific index
+            cart.splice(index, 1); 
+            updateCart();
+        }
+    });
+    // ---------------------------------------------
+
 
     // Product List Click
     productListEl.addEventListener('click', (e) => {
@@ -107,7 +127,30 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cart-close').addEventListener('click', () => cartModal.style.display = 'none');
     productClose.addEventListener('click', () => productModal.style.display = 'none');
 
-    // Admin Login
+    // --- UPDATED Admin Login Logic ---
+    adminLoginBtn.addEventListener('click', () => {
+        const username = document.getElementById('admin-username').value;
+        const password = document.getElementById('admin-password').value;
+
+        if(username === 'admin' && password === 'admin345') {
+            loggedInUser = 'admin';
+            adminMessage.textContent = 'Admin Login successful!';
+            adminMessage.style.color = 'green';
+            setTimeout(() => adminModal.style.display = 'none', 1000);
+        } else if (username === 'user' && password === 'user123') {
+             loggedInUser = 'user';
+            adminMessage.textContent = 'User Login successful!';
+            adminMessage.style.color = 'green';
+            setTimeout(() => adminModal.style.display = 'none', 1000);
+        } else {
+            loggedInUser = null;
+            adminMessage.textContent = 'Invalid credentials';
+            adminMessage.style.color = 'red';
+        }
+    });
+    // ---------------------------------
+
+    // Admin Login button handler (remains the same)
     const adminBtn = document.getElementById('admin-login-btn');
     const adminModal = document.getElementById('admin-modal');
     const adminClose = document.getElementById('admin-close');
@@ -117,17 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
     adminBtn.addEventListener('click', () => adminModal.style.display = 'block');
     adminClose.addEventListener('click', () => adminModal.style.display = 'none');
 
-    adminLoginBtn.addEventListener('click', () => {
-        const username = document.getElementById('admin-username').value;
-        const password = document.getElementById('admin-password').value;
-        if(username === 'admin' && password === '1234') {
-            adminMessage.textContent = 'Login successful! You can edit products in code.';
-            adminMessage.style.color = 'green';
-        } else {
-            adminMessage.textContent = 'Invalid credentials';
-            adminMessage.style.color = 'red';
-        }
-    });
 
     // Category Filter Change
     categoryFilter.addEventListener('change', (e) => {
