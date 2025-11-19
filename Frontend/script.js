@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ------------------------------------------------------------------
+    // MOVED ADMIN BUTTON VARIABLES HERE TO FIX THE REFERENCE ERROR!
+    // ------------------------------------------------------------------
+    const adminBtn = document.getElementById('admin-login-btn');
+    const adminModal = document.getElementById('admin-modal');
+    const adminClose = document.getElementById('admin-close');
+    const adminLoginBtn = document.getElementById('admin-login'); 
+    const adminMessage = document.getElementById('admin-message');
+    // ------------------------------------------------------------------
 
     const products = [
+        // ... (Your existing products array here) ...
         {name: 'Heirloom Tomatoes', price: 4.99, category: 'Fruits & Vegetables', image: 'images/heirloom_tomatoes.jpg', description: 'Sweet, juicy, perfect for salads.', stock: 20, rating: 4.8},
         {name: 'Organic Carrots', price: 3.99, category: 'Fruits & Vegetables', image: 'images/organic_carrots.jpg', description: 'Crisp and fresh.', stock: 30, rating: 4.6},
         {name: 'Sweet Corn', price: 5.50, category: 'Fruits & Vegetables', image: 'images/sweet_corn.jpg', description: 'Picked this morning!', stock: 25, rating: 4.7},
@@ -34,20 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const productModalAdd = document.getElementById('product-modal-add');
 
     const categoryFilter = document.getElementById('category-filter');
-    
-    // ------------------------------------------------------------------
-    // MOVED ADMIN BUTTON VARIABLES HERE TO FIX THE REFERENCE ERROR!
-    // ------------------------------------------------------------------
-    const adminBtn = document.getElementById('admin-login-btn');
-    const adminModal = document.getElementById('admin-modal');
-    const adminClose = document.getElementById('admin-close');
-    const adminLoginBtn = document.getElementById('admin-login'); // This was the variable causing the error!
-    const adminMessage = document.getElementById('admin-message');
-    // ------------------------------------------------------------------
 
     let cart = [];
     let currentProductIndex = null;
-    let loggedInUser = null; // New state to track the logged-in user role
+    let loggedInUser = null; 
 
     function renderProducts(filter = 'All') {
         productListEl.innerHTML = '';
@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- UPDATED updateCart function with Remove button ---
     function updateCart() {
         cartCountEl.textContent = cart.length;
         cartItemsEl.innerHTML = '';
@@ -87,19 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cartTotalEl.textContent = total.toFixed(2);
     }
-    // -----------------------------------------------------
 
-    // --- New function to remove item from cart ---
     cartItemsEl.addEventListener('click', (e) => {
         if(e.target.classList.contains('remove-btn')) {
             const index = e.target.dataset.index;
-            // Remove 1 item at the specific index
             cart.splice(index, 1); 
             updateCart();
         }
     });
-    // ---------------------------------------------
-
 
     // Product List Click
     productListEl.addEventListener('click', (e) => {
@@ -137,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cart-close').addEventListener('click', () => cartModal.style.display = 'none');
     productClose.addEventListener('click', () => productModal.style.display = 'none');
 
-    // --- UPDATED Admin Login Logic (This is where the variable was used first) ---
+    // Admin Login Logic
     adminLoginBtn.addEventListener('click', () => {
         const username = document.getElementById('admin-username').value;
         const password = document.getElementById('admin-password').value;
@@ -158,12 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
             adminMessage.style.color = 'red';
         }
     });
-    // ---------------------------------
 
-    // Admin Login button handler
+    // Admin Modal Open/Close Handlers
     adminBtn.addEventListener('click', () => adminModal.style.display = 'block');
     adminClose.addEventListener('click', () => adminModal.style.display = 'none');
-
 
     // Category Filter Change
     categoryFilter.addEventListener('change', (e) => {
