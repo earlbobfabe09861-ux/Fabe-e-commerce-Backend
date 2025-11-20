@@ -11,7 +11,13 @@ app.use(express.json());
 
 // 🔥 FIX: Serve static files (images, frontend assets) from the 'public' directory.
 // If your frontend builds to 'build' or 'dist', change 'public' below.
-app.use(express.static(path.join(__dirname, 'public')));
+// IMPORTANT: Since your frontend files (index.html, script.js, Images folder) are likely 
+// in the root of your GitHub repository for Netlify/Vercel deployment,
+// we will serve the root of the project directory. If your frontend is inside a 
+// folder called 'Frontend' and that is what you deploy, adjust this path.
+// Assuming a monolithic repo structure for simplicity:
+app.use(express.static(path.join(__dirname))); 
+app.use('/Images', express.static(path.join(__dirname, 'Images'))); 
 
 // Models
 const User = require('./models/User.js'); 
@@ -99,7 +105,7 @@ mongoose.connect(MONGO_URI)
 
 // -------------------- AUTH & USER ROUTES --------------------
 
-// Admin Login
+// Login (Handles both Admin and Standard User)
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -107,8 +113,7 @@ app.post('/api/login', async (req, res) => {
         const user = await User.findOne({ email }).select('+password');
 
         if (user && (await user.matchPassword(password))) {
-            if (!user.isAdmin) return res.status(403).json({ message: 'Access Denied: Not an administrator' });
-
+             // Return user info, including isAdmin status for frontend to decide UI
             res.json({
                 _id: user._id,
                 name: user.name,
@@ -124,11 +129,17 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Create User 
+// Create User (Registration)
 app.post('/api/users', async (req, res) => {
     try {
         const { name, email, password } = req.body; 
-        const newUser = new User({ name, email, password }); 
+        const userExists = await User.findOne({ email });
+
+        if (userExists) {
+            return res.status(400).json({ message: 'Email already in use.' });
+        }
+        
+        const newUser = new User({ name, email, password, isAdmin: false }); 
         const savedUser = await newUser.save();
         res.status(201).json({ 
             _id: savedUser._id, 
@@ -137,7 +148,6 @@ app.post('/api/users', async (req, res) => {
             token: generateToken(savedUser._id), 
         });
     } catch (error) {
-        if (error.code === 11000) return res.status(400).json({ message: 'Email already in use.' });
         res.status(400).json({ message: error.message });
     }
 });
