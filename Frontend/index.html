@@ -82,7 +82,7 @@
                 <h2>Your Cart</h2>
                 <ul id="cart-items"></ul>
                 <p>Total: $<span id="cart-total">0.00</span></p>
-            </div>
+                </div>
         </div>
 
         <div id="admin-login-modal" class="modal" style="display:none;">
@@ -102,6 +102,7 @@
                 </form>
             </div>
         </div>
+
         <div id="product-form-modal" class="modal" style="display:none;">
             <div class="modal-content">
                 <span class="close" id="product-form-close">&times;</span>
@@ -121,8 +122,8 @@
                     <label for="product-description-input">Description:</label>
                     <textarea id="product-description-input" required></textarea>
                     
-                    <label for="product-image-url-input">Image URL:</label>
-                    <input type="url" id="product-image-url-input">
+                    <label for="product-image-url-input">Image URL (e.g., tomatoes.jpg):</label>
+                    <input type="text" id="product-image-url-input">
                     
                     <label for="product-category-input">Category:</label>
                     <select id="product-category-input">
@@ -137,6 +138,7 @@
                 </form>
             </div>
         </div>
+
         <div id="product-modal" class="modal">
             <div class="modal-content">
                 <span class="close" id="product-close">&times;</span>
