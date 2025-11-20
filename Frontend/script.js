@@ -1,8 +1,7 @@
 // --- CONFIGURATION ---
-// IMPORTANT: Use the full URL to connect to your running Node.js server.
-const API_URL = "http://localhost:5000/api";
+// IMPORTANT: The API_URL is now set to your live Render backend URL.
+const API_URL = "https://fabe-e-commerce-store.onrender.com/api"; 
 // Set the path to your image folder relative to index.html.
-// Based on your folder structure (Frontend/Images), this is likely correct.
 const IMAGE_BASE_PATH = "Images/"; 
 
 
@@ -173,7 +172,7 @@ async function fetchProducts() {
         displayProducts(currentProducts);
 
     } catch (error) {
-        productList.innerHTML = "<p>Failed to load products. Ensure your backend server is running on port 5000 and is connected to MongoDB.</p>";
+        productList.innerHTML = "<p>Failed to load products. Ensure your backend server is running and accessible at the configured API_URL.</p>";
         console.error("Fetch Products Error:", error);
     }
 }
