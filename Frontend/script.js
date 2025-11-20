@@ -1,13 +1,14 @@
 // --- CONFIGURATION ---
-// IMPORTANT: The API_URL is now set to your live Render backend URL.
 const API_URL = "https://fabe-e-commerce-store.onrender.com/api"; 
-// Set the path to your image folder relative to index.html.
-const IMAGE_BASE_PATH = "Images/"; 
+// 🔥 FIX 1: Set the base path to start with '/' for root-level deployment access
+const IMAGE_BASE_PATH = "/Images/"; 
 
 
 // --- DOM ELEMENTS ---
 const productList = document.getElementById("product-list");
 const adminLoginBtn = document.getElementById("admin-login-btn");
+// 🔥 FIX 2: Added Logout Button element reference
+const adminLogoutBtn = document.getElementById("admin-logout-btn"); 
 const adminLoginModal = document.getElementById("admin-login-modal");
 const adminLoginForm = document.getElementById("admin-login-form");
 const loginMessage = document.getElementById("login-message");
@@ -29,36 +30,72 @@ const categoryFilter = document.getElementById("category-filter");
 
 // --- STATE ---
 let cart = [];
-// Retrieve token from local storage if it exists
 let adminToken = localStorage.getItem('adminToken') || ""; 
-let currentProducts = []; // Stores the latest fetched product list
+let currentProducts = []; 
 
 
 // --- EVENT LISTENERS ---
 
-// Open/Close Cart Modal
 cartIcon.addEventListener("click", () => cartModal.style.display = "block");
 document.getElementById("cart-close").addEventListener("click", () => cartModal.style.display = "none");
-
-// Filter Products
 categoryFilter.addEventListener("change", () => displayProducts(currentProducts));
+// 🔥 FIX 3: Added Logout event listener
+adminLogoutBtn.addEventListener("click", handleLogout); 
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    // 🔥 FIX 4: Check and update UI status immediately on page load
+    updateAuthUI(); 
     fetchProducts();
     updateCartUI();
 });
 
 
-// --- CART & ORDER FUNCTIONS ---
+// --- NEW AUTH UTILITY FUNCTIONS ---
+
+// 🔥 FIX 5: New function to manage the visibility of the login/logout buttons and dashboard
+function updateAuthUI() {
+    const isAdminLoggedIn = !!adminToken; 
+
+    // Toggle Login/Logout Buttons
+    if (adminLoginBtn) {
+        adminLoginBtn.style.display = isAdminLoggedIn ? 'none' : 'block';
+    }
+    if (adminLogoutBtn) {
+        adminLogoutBtn.style.display = isAdminLoggedIn ? 'block' : 'none';
+    }
+    
+    // Toggle Admin Dashboard visibility
+    if (adminDashboardSection) {
+        // Only show if logged in AND if we have products to populate it with
+        adminDashboardSection.style.display = isAdminLoggedIn ? 'block' : 'none';
+        
+        // If logged in, ensure we draw the dashboard content
+        if (isAdminLoggedIn && currentProducts.length > 0) {
+            showAdminDashboard(currentProducts);
+        }
+    }
+
+    // Clear any leftover message
+    loginMessage.textContent = '';
+}
+
+// 🔥 FIX 6: New Logout Function
+function handleLogout() {
+    adminToken = "";
+    localStorage.removeItem('adminToken');
+    alert("You have been successfully logged out.");
+    updateAuthUI(); // Update buttons and hide dashboard
+    fetchProducts(); // Refresh product list (if product cards need to change)
+}
+
+// --- CART & ORDER FUNCTIONS (No changes required) ---
 
 function updateCartUI() {
     cartItemsEl.innerHTML = "";
     let total = 0;
     cart.forEach(item => {
         const li = document.createElement("li");
-        
-        // Add Remove Button
         const removeBtn = document.createElement('button');
         removeBtn.textContent = 'Remove';
         removeBtn.className = 'remove-btn';
@@ -72,7 +109,6 @@ function updateCartUI() {
     cartTotalEl.textContent = total.toFixed(2);
     cartCount.textContent = cart.reduce((sum, i) => sum + i.quantity, 0);
 
-    // Dynamic Checkout Button
     const checkoutBtnId = 'checkout-btn';
     if (document.getElementById(checkoutBtnId)) {
         document.getElementById(checkoutBtnId).remove();
@@ -100,15 +136,13 @@ async function checkout() {
         return;
     }
 
-    // --- TEMPORARY AUTH CHECK FOR CHECKOUT ---
-    // In a real application, a standard user would log in, not the admin.
     if (!adminToken) { 
-        alert("Please log in to proceed with checkout.");
+        alert("Please log in to proceed with checkout. (Note: Using admin token for checkout test.)");
         return;
     }
 
     const shippingAddress = {
-        address: "123 Test Street", // Hardcoded address
+        address: "123 Test Street", 
         city: "AgriTown",
         postalCode: "12345",
         country: "PH",
@@ -129,7 +163,6 @@ async function checkout() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // Using admin token for temporary authentication during checkout test
                 Authorization: `Bearer ${adminToken}`, 
             },
             body: JSON.stringify({
@@ -141,7 +174,7 @@ async function checkout() {
 
         if (res.ok) {
             alert("Order placed successfully! Check your database for the new order.");
-            cart = []; // Clear cart
+            cart = []; 
             updateCartUI();
             cartModal.style.display = "none";
         } else {
@@ -162,12 +195,8 @@ async function fetchProducts() {
         const res = await fetch(`${API_URL}/products`);
         currentProducts = await res.json();
         
-        // Show/Hide Admin Dashboard based on login status
-        if (adminToken) {
-            showAdminDashboard(currentProducts);
-        } else {
-            adminDashboardSection.style.display = 'none';
-        }
+        // Rerun the UI update in case the product list helps populate the dashboard
+        updateAuthUI();
 
         displayProducts(currentProducts);
 
@@ -180,7 +209,6 @@ async function fetchProducts() {
 function displayProducts(products) {
     productList.innerHTML = "";
     
-    // Apply Filter
     const selectedCategory = categoryFilter.value;
     const filteredProducts = selectedCategory === 'All' 
         ? products 
@@ -196,7 +224,7 @@ function createProductCard(product) {
     const div = document.createElement("div");
     div.className = "product-card";
     
-    // CORRECTED: Image source uses the base path defined above
+    // 🔥 FIX 7: Image source uses the correct base path and includes an onerror fallback
     const imageUrl = `${IMAGE_BASE_PATH}${product.image}`; 
     
     div.innerHTML = `
@@ -208,13 +236,11 @@ function createProductCard(product) {
         <button class="add-to-cart">Add to Cart</button>
     `;
 
-    // Add to Cart Listener
     div.querySelector(".add-to-cart").addEventListener("click", (e) => {
-        e.stopPropagation(); // Prevent modal from opening
+        e.stopPropagation(); 
         addToCart(product);
     });
     
-    // Open Product Modal on card click
     div.addEventListener('click', () => showProductModal(product));
 
     return div;
@@ -259,10 +285,13 @@ adminLoginForm.addEventListener("submit", async e => {
         
         if (res.ok) {
             adminToken = data.token;
-            localStorage.setItem('adminToken', adminToken); // Store token
+            localStorage.setItem('adminToken', adminToken); 
             loginMessage.textContent = "Login successful!";
             adminLoginModal.style.display = "none"; 
-            fetchProducts(); // Refresh products and show dashboard
+            
+            updateAuthUI(); // Show dashboard and change buttons
+            fetchProducts(); 
+
         } else {
             loginMessage.textContent = data.message || "Login failed. Check credentials and ensure you are an admin.";
         }
@@ -276,7 +305,7 @@ adminLoginForm.addEventListener("submit", async e => {
 // --- ADMIN DASHBOARD FUNCTIONS ---
 
 function showAdminDashboard(products) {
-    adminDashboardSection.style.display = 'block';
+    // This function only runs if updateAuthUI() determines the admin is logged in.
     adminContentEl.innerHTML = ''; 
 
     const addBtn = document.createElement('button');
@@ -316,6 +345,10 @@ function showAdminDashboard(products) {
 }
 
 function openProductForm(product = null) {
+    if (!adminToken) {
+        alert("You must be logged in as an Admin to perform this action.");
+        return;
+    }
     adminProductForm.reset();
     productFormModal.style.display = 'block';
 
@@ -336,11 +369,15 @@ function openProductForm(product = null) {
 
 // Global functions for buttons in dynamically generated HTML
 window.editProduct = (id) => {
+    // 🔥 FIX 8: Added security check
+    if (!adminToken) return alert("Admin login required.");
     const product = currentProducts.find(p => p._id === id);
     if (product) openProductForm(product);
 };
 
 window.deleteProduct = async (id) => {
+    // 🔥 FIX 9: Added security check
+    if (!adminToken) return alert("Admin login required.");
     if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
@@ -351,7 +388,7 @@ window.deleteProduct = async (id) => {
         
         if (res.ok) {
             alert("Product deleted successfully!");
-            fetchProducts(); // Refresh list
+            fetchProducts(); 
         } else {
             alert("Failed to delete product.");
         }
@@ -363,6 +400,9 @@ window.deleteProduct = async (id) => {
 // Form submission for Add/Edit
 adminProductForm.addEventListener('submit', async e => {
     e.preventDefault();
+    // 🔥 FIX 10: Added security check
+    if (!adminToken) return alert("Admin login required.");
+
     const id = document.getElementById("product-id-field").value;
     const method = id ? 'PUT' : 'POST';
     const url = id ? `${API_URL}/products/${id}` : `${API_URL}/products`;
@@ -389,7 +429,7 @@ adminProductForm.addEventListener('submit', async e => {
         if (res.ok) {
             alert(id ? "Product updated successfully!" : "Product added successfully!");
             productFormModal.style.display = 'none';
-            fetchProducts(); // Refresh list
+            fetchProducts(); 
         } else {
             const errorData = await res.json();
             alert(`Operation failed: ${errorData.message}`);
@@ -406,25 +446,24 @@ productFormClose.addEventListener("click", () => productFormModal.style.display 
 // --- PRODUCT MODAL FOR VIEWING ---
 
 function showProductModal(product) {
+    // 🔥 FIX 11: Uses the corrected image path
     document.getElementById("product-modal-image").src = `${IMAGE_BASE_PATH}${product.image}`;
     document.getElementById("product-modal-name").textContent = product.name;
     document.getElementById("product-modal-description").textContent = product.description;
     document.getElementById("product-modal-price").textContent = `$${product.price.toFixed(2)}`;
     document.getElementById("product-modal-stock").textContent = `Stock: ${product.stock}`;
-    // No Rating field in model, hide or remove if not needed
     document.getElementById("product-modal-rating").style.display = 'none';
 
-    // Update 'Add to Cart' button
     const modalAddBtn = document.getElementById("product-modal-add");
     modalAddBtn.onclick = () => {
         addToCart(product);
         productModal.style.display = 'none'; 
     };
 
-    // Admin buttons display
     const editBtn = document.getElementById("product-modal-edit");
     const deleteBtn = document.getElementById("product-modal-delete");
 
+    // 🔥 FIX 12: Admin buttons only display if token exists
     if (adminToken) {
         editBtn.style.display = 'block';
         deleteBtn.style.display = 'block';

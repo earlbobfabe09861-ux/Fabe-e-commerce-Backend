@@ -9,12 +9,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 🔥 FIX: Serve static files (images, frontend assets) from the 'public' directory.
+// If your frontend builds to 'build' or 'dist', change 'public' below.
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Models
 const User = require('./models/User.js'); 
 const Product = require('./models/Product.js');
-const Order = require('./models/Order.js'); // <<< NEW: Imported Order Model
-
-// WARNING: Assuming User.js model includes password hashing logic (e.g., pre('save') hook)
+const Order = require('./models/Order.js');
 
 // JWT Token Generator
 const generateToken = (id) => {
@@ -31,14 +33,12 @@ const protect = async (req, res, next) => {
         try {
             token = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            // Get user without password field
             req.user = await User.findById(decoded.id).select('-password'); 
             
             if (!req.user) return res.status(404).json({ message: 'User not found.' });
             
             next();
         } catch (error) {
-            // This catches expired tokens or invalid signatures
             res.status(401).json({ message: 'Not authorized, token failed or expired' });
         }
     } else {
@@ -73,7 +73,6 @@ const seedAdminUser = async () => {
         await newAdmin.save();
         console.log(`✅ Default Admin Created! Login: ${adminEmail} / ${adminPassword}`);
     } else {
-        // We ensure the existing admin is actually an admin
         if (!adminUser.isAdmin) {
              adminUser.isAdmin = true;
              await adminUser.save();
@@ -88,9 +87,9 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
-    .then(async () => { // Made callback async to await seedAdminUser
+    .then(async () => {
         console.log('✅ Database connected successfully!');
-        await seedAdminUser(); // <<< RUNS THE ADMIN SEEDER HERE
+        await seedAdminUser();
         app.listen(PORT, () => console.log(`🌍 Server running on port ${PORT}`));
     })
     .catch((error) => {
@@ -100,7 +99,7 @@ mongoose.connect(MONGO_URI)
 
 // -------------------- AUTH & USER ROUTES --------------------
 
-// Admin Login (No change, uses existing logic)
+// Admin Login
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -125,7 +124,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Create User (No change)
+// Create User 
 app.post('/api/users', async (req, res) => {
     try {
         const { name, email, password } = req.body; 
@@ -143,7 +142,7 @@ app.post('/api/users', async (req, res) => {
     }
 });
 
-// Read All Users (Admin) (Middleware changed to use protect, then check isAdmin)
+// Read All Users (Admin) 
 app.get('/api/users', protect, isAdmin, async (req, res) => {
     try {
         const users = await User.find().select('-password'); 
@@ -153,7 +152,7 @@ app.get('/api/users', protect, isAdmin, async (req, res) => {
     }
 });
 
-// Delete User (Admin) (Middleware changed to use protect, then check isAdmin)
+// Delete User (Admin) 
 app.delete('/api/users/:id', protect, isAdmin, async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.id);
@@ -165,7 +164,7 @@ app.delete('/api/users/:id', protect, isAdmin, async (req, res) => {
 
 // -------------------- PRODUCTS ROUTES --------------------
 
-// Read All Products (No change)
+// Read All Products
 app.get('/api/products', async (req, res) => {
     try {
         const products = await Product.find({});
@@ -179,7 +178,7 @@ app.get('/api/products', async (req, res) => {
     }
 });
 
-// Create Product (Admin) (Middleware changed to use protect, then check isAdmin)
+// Create Product (Admin) 
 app.post('/api/products', protect, isAdmin, async (req, res) => {
     try {
         const newProduct = new Product(req.body); 
@@ -191,7 +190,7 @@ app.post('/api/products', protect, isAdmin, async (req, res) => {
     }
 });
 
-// Update Product (Admin) (Middleware changed to use protect, then check isAdmin)
+// Update Product (Admin) 
 app.put('/api/products/:id', protect, isAdmin, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -215,7 +214,7 @@ app.put('/api/products/:id', protect, isAdmin, async (req, res) => {
     }
 });
 
-// Delete Product (Admin) (Middleware changed to use protect, then check isAdmin)
+// Delete Product (Admin)
 app.delete('/api/products/:id', protect, isAdmin, async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
@@ -241,13 +240,11 @@ app.post('/api/orders', protect, async (req, res) => {
     }
 
     try {
-        // Create new order
         const order = new Order({
-            user: req.user._id, // User is attached via the protect middleware
+            user: req.user._id, 
             orderItems,
             shippingAddress,
             totalPrice,
-            // isPaid will be false initially
         });
 
         const createdOrder = await order.save();
