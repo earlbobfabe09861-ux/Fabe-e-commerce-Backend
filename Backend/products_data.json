@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Heirloom Tomatoes",
+    "price": 4.99,
+    "stock": 20,
+    "description": "Sweet, juicy, perfect for salads. Grown organically.",
+    "image": "heirloom tomatoes.jpg",
+    "category": "Fruits & Vegetables",
+    "_id": "60d0fe4f531123616a22b010"
+  },
+  {
+    "name": "Organic Carrots",
+    "price": 3.99,
+    "stock": 30,
+    "description": "Crisp and fresh. Perfect for snacking or roasting.",
+    "image": "organic_carrots.jpg",
+    "category": "Fruits & Vegetables",
+    "_id": "60d0fe4f531123616a22b011"
+  },
+  {
+    "name": "Pasture-Raised Eggs",
+    "price": 6.50,
+    "stock": 15,
+    "description": "Rich flavor and vibrant yolks from hens on pasture.",
+    "image": "pasture_raised_eggs.jpg",
+    "category": "Dairy & Eggs",
+    "_id": "60d0fe4f531123616a22b012"
+  },
+  {
+    "name": "Garden Shovel",
+    "price": 18.00,
+    "stock": 23,
+    "description": "Durable steel shovel with an ergonomic handle for easy digging.",
+    "image": "garden_shovel.jpg",
+    "category": "Agricultural Tools",
+    "_id": "60d0fe4f531123616a22b013"
+  },
+  {
+    "name": "Organic Flour",
+    "price": 5.50,
+    "stock": 40,
+    "description": "Finely milled organic wheat flour, ideal for baking bread and pastries.",
+    "image": "organic_flour.jpg",
+    "category": "Organic & Pantry",
+    "_id": "60d0fe4f531123616a22b014"
+  },
+  {
+    "name": "Local Honey Jar",
+    "price": 12.99,
+    "stock": 25,
+    "description": "Sweet, raw honey sourced from local bee farms.",
+    "image": "local_honey.jpg",
+    "category": "Organic & Pantry",
+    "_id": "60d0fe4f531123616a22b015"
+  },
+  {
+    "name": "Rose Saplings",
+    "price": 9.50,
+    "stock": 50,
+    "description": "Variety of colorful rose saplings ready for planting in your garden.",
+    "image": "rose_sapling.jpg",
+    "category": "Seeds & Plants",
+    "_id": "60d0fe4f531123616a22b016"
+  },
+  {
+    "name": "Organic Almond Milk",
+    "price": 4.00,
+    "stock": 35,
+    "description": "Non-dairy milk alternative made from organic almonds.",
+    "image": "organic_milk.jpg",
+    "category": "Dairy & Eggs",
+    "_id": "60d0fe4f531123616a22b017"
+  },
+  {
+    "name": "Gardening Gloves",
+    "price": 8.00,
+    "stock": 45,
+    "description": "Durable, waterproof gloves for comfortable and safe gardening.",
+    "image": "gardening_gloves.jpg",
+    "category": "Agricultural Tools",
+    "_id": "60d0fe4f531123616a22b018"
+  },
+  {
+    "name": "Sweet Corn",
+    "price": 5.50,
+    "stock": 25,
+    "description": "Picked this morning! Sweet and crisp summer corn.",
+    "image": "sweet_corn.jpg",
+    "category": "Fruits & Vegetables",
+    "_id": "60d0fe4f531123616a22b019"
+  },
+  {
+    "name": "Strawberries",
+    "price": 6.99,
+    "stock": 15,
+    "description": "Fresh and sweet. Ideal for desserts or snacks.",
+    "image": "strawberries.jpg",
+    "category": "Fruits & Vegetables",
+    "_id": "60d0fe4f531123616a22b020"
+  }
+]

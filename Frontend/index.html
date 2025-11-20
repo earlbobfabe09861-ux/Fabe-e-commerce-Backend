@@ -25,8 +25,11 @@
                 <a href="#about">About Us</a>
                 <a href="#contact">Contact</a>
                 
+                <a href="#" id="user-auth-btn">Login / Register</a>
+                <a href="#" id="user-logout-btn" style="display: none; color: #4CAF50;">Logout</a>
+
                 <a href="#" id="admin-login-btn">Admin Login</a>
-                <a href="#" id="admin-logout-btn" style="display: none; color: #ff5722;">Logout</a>
+                <a href="#" id="admin-logout-btn" style="display: none; color: #ff5722;">Admin Logout</a>
             </nav>
             <div class="cart-icon" id="cart-icon">🛒 Cart (<span id="cart-count">0</span>)</div>
         </header>
@@ -87,20 +90,48 @@
                 </div>
         </div>
 
+        <div id="user-auth-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" id="user-auth-close">&times;</span> 
+                <h2>User Authentication</h2>
+                <div id="auth-forms">
+                    <form id="user-login-form">
+                        <h3>Log In</h3>
+                        <label for="user-login-email">Email:</label>
+                        <input type="email" id="user-login-email" required>
+                        <label for="user-login-password">Password:</label>
+                        <input type="password" id="user-login-password" required>
+                        <button type="submit">Login</button>
+                        <p style="margin-top: 10px;">New user? <a href="#" id="show-register">Register here</a></p>
+                    </form>
+                    
+                    <form id="user-register-form" style="display:none;">
+                        <h3>Register</h3>
+                        <label for="user-register-name">Name:</label>
+                        <input type="text" id="user-register-name" required>
+                        <label for="user-register-email">Email:</label>
+                        <input type="email" id="user-register-email" required>
+                        <label for="user-register-password">Password:</label>
+                        <input type="password" id="user-register-password" required>
+                        <button type="submit">Register</button>
+                        <p style="margin-top: 10px;">Already have an account? <a href="#" id="show-login">Login here</a></p>
+                    </form>
+                </div>
+                <p id="user-auth-message" style="color: red; margin-top: 10px; text-align: center;"></p>
+            </div>
+        </div>
+
         <div id="admin-login-modal" class="modal" style="display:none;">
             <div class="modal-content">
                 <span class="close" id="admin-login-close">&times;</span> 
-                
                 <h2>Admin Login</h2>
                 <form id="admin-login-form">
                     <label for="admin-email">Email:</label>
                     <input type="email" id="admin-email" name="email" placeholder="Admin Email" required>
-                    
                     <label for="admin-password-input">Password:</label>
                     <input type="password" id="admin-password-input" name="password" placeholder="Password" required>
-                    
                     <button type="submit" id="admin-login-submit-btn">Login</button>
-                    <p id="login-message" style="color: red; margin-top: 10px; text-align: center;"></p>
+                    <p id="admin-login-message" style="color: red; margin-top: 10px; text-align: center;"></p>
                 </form>
             </div>
         </div>
@@ -111,22 +142,16 @@
                 <h2 id="product-form-title">Add New Product</h2>
                 <form id="admin-product-form">
                     <input type="hidden" id="product-id-field" value="">
-
                     <label for="product-name-input">Name:</label>
                     <input type="text" id="product-name-input" required>
-
                     <label for="product-price-input">Price:</label>
                     <input type="number" id="product-price-input" step="0.01" required>
-
                     <label for="product-stock-input">Stock:</label>
                     <input type="number" id="product-stock-input" required>
-
                     <label for="product-description-input">Description:</label>
                     <textarea id="product-description-input" required></textarea>
-                    
                     <label for="product-image-url-input">Image URL (e.g., tomatoes.jpg):</label>
                     <input type="text" id="product-image-url-input">
-                    
                     <label for="product-category-input">Category:</label>
                     <select id="product-category-input">
                         <option value="Fruits & Vegetables">Fruits & Vegetables</option>
@@ -135,7 +160,6 @@
                         <option value="Seeds & Plants">Seeds & Plants</option>
                         <option value="Organic & Pantry">Organic & Pantry</option>
                     </select>
-                    
                     <button type="submit" id="product-form-submit">Save Product</button>
                 </form>
             </div>
@@ -150,7 +174,6 @@
                 <p id="product-modal-price" class="price"></p>
                 <p id="product-modal-stock"></p>
                 <p id="product-modal-rating"></p>
-
                 <button id="product-modal-add">Add to Cart</button>
                 <button id="product-modal-edit" style="display:none;background:#2196F3;margin-top:10px;">Edit</button>
                 <button id="product-modal-delete" style="display:none;background:#e53935;margin-top:5px;">Delete</button>
